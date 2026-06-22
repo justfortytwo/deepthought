@@ -12,7 +12,7 @@ that judgement lives here.
 
 ## Provider-agnostic by contract
 
-deepthought defines the model seam (`LlmClient`) and ships a **stub**
+deepthought defines the model seam (`LlmClient`) and ships the reference
 `SalienceExtractor`; it **never hardcodes a provider**. There is no Ollama / OpenAI
 / Anthropic SDK import in this package and no credentials. The host injects a
 concrete `LlmClient`, exactly mirroring how guide injects an `Embedder` rather than
@@ -51,8 +51,29 @@ const candidates: Candidate[] = await extractor.extractSalient({
 - `SalienceExtractor` — the extraction contract; `extractSalient(turn, opts)`
   returns scored `Candidate[]`.
 - `ModelSalienceExtractor` / `createSalienceExtractor(llm)` — the reference
-  implementation. The wiring is real; the model-output parsing is a `// TODO(impl):`
-  stub so a host can fix a structured-output convention with its own client.
+  implementation: it frames the task, runs the injected client, then parses,
+  scores, filters, and stamps provenance on the candidates (see *Output
+  convention*).
+
+## Output convention
+
+`extractSalient` expects the injected client's `complete()` to return a **JSON
+array** of candidate objects:
+
+```json
+[{ "content": "the owner ships on Fridays", "salience": 0.9, "observed": "stated" }]
+```
+
+Each object needs `content` (non-empty) and `salience` (0–1); `source`,
+`observed`, `date`, `tags`, and `meta` are optional. Parsing is **lenient and
+fail-soft**: the array is extracted even from prose- or fence-wrapped output,
+malformed items are skipped, `salience` is clamped to `[0,1]`, and unparseable
+output yields `[]` (never a throw — one bad turn must not crash an enrichment
+loop). Candidates inherit the turn's `source`/`observed`/`date` where the model
+leaves them blank (`opts.defaultObserved` is the final fallback for `observed`).
+
+`ExtractOptions` post-filters the result: `minSalience` drops low-confidence
+candidates and `maxCandidates` caps the (salience-sorted) output.
 
 ## How it fits
 
