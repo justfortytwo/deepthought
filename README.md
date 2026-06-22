@@ -1,6 +1,6 @@
 # @justfortytwo/deepthought
 
-The **salience extraction** engine for [justfortytwo](https://github.com/justfortytwo).
+The **salience extraction** engine for [fortytwo](https://github.com/justfortytwo).
 Given a conversational turn, it distils a small set of **atomic, self-contained
 candidate memories**, each with a **salience score**, so the write-side
 (`@justfortytwo/guide`'s enrichment loop) can dedupe, supersede, and persist only
@@ -76,7 +76,7 @@ npm test        # vitest run
 
 ## License
 
-MIT (c) 2026 justfortytwo
+MIT (c) 2026 Enrico Deleo
 
 ---
 
