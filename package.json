@@ -1,0 +1,42 @@
+{
+  "name": "@justfortytwo/deepthought",
+  "version": "0.1.0",
+  "description": "Model-driven salience extraction engine for justfortytwo: distils a conversational turn into atomic, scored candidate memories. The LLM client is an injected dependency — deepthought owns the contract + a stub, never a provider.",
+  "license": "MIT",
+  "author": "justfortytwo",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "justfortytwo",
+    "salience",
+    "memory",
+    "enrichment",
+    "llm",
+    "extraction"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}
