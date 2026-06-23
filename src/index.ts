@@ -1,15 +1,15 @@
-// @justfortytwo/deepthought — model-driven SALIENCE EXTRACTION.
+// @justfortytwo/salience — model-driven SALIENCE EXTRACTION.
 //
-// This is the piece guide (@justfortytwo/guide) must NOT embed: a memory server
+// This is the piece memory (@justfortytwo/memory) must NOT embed: a memory server
 // stores and recalls, it does not run a model to decide what is worth keeping.
-// deepthought owns exactly that judgement — given a conversational turn, distil a
+// salience owns exactly that judgement — given a conversational turn, distil a
 // small set of atomic, self-contained candidate memories, each with a salience
-// score, so the write-side (guide.enrich) can dedupe/supersede/write the survivors.
+// score, so the write-side (memory.enrich) can dedupe/supersede/write the survivors.
 //
-// PROVIDER-AGNOSTIC BY CONTRACT: deepthought defines the LlmClient interface and a
+// PROVIDER-AGNOSTIC BY CONTRACT: salience defines the LlmClient interface and a
 // stub SalienceExtractor; it NEVER hardcodes a provider (no Ollama/OpenAI/Anthropic
 // SDK import here). The host injects a concrete LlmClient. This keeps the salience
-// policy here and the model wiring at the edge, exactly mirroring how guide injects
+// policy here and the model wiring at the edge, exactly mirroring how memory injects
 // its Embedder rather than owning a model client.
 
 /** A single conversational turn to distil. Free-form text + optional provenance. */
@@ -27,9 +27,9 @@ export interface Turn {
 }
 
 /**
- * A distilled candidate memory. Shape is intentionally aligned with guide's
+ * A distilled candidate memory. Shape is intentionally aligned with memory's
  * `EnrichmentCandidate` so candidates flow straight into `enrich()` with no
- * remapping: deepthought extracts + scores, guide dedupes + writes.
+ * remapping: salience extracts + scores, memory dedupes + writes.
  */
 export interface Candidate {
   /** An atomic, self-contained statement worth remembering. */
@@ -52,8 +52,8 @@ export interface Candidate {
 export interface ExtractOptions {
   /**
    * Drop candidates the model scores below this salience before returning them.
-   * The write-side (guide) applies its own threshold too; this is an early filter
-   * so the model's low-confidence noise never leaves deepthought.
+   * The write-side (memory) applies its own threshold too; this is an early filter
+   * so the model's low-confidence noise never leaves salience.
    */
   minSalience?: number;
   /** Hard cap on how many candidates to return (highest-salience first). */
@@ -64,13 +64,13 @@ export interface ExtractOptions {
 
 /**
  * The injected model seam. A host supplies a concrete client (Ollama/OpenAI/etc.);
- * deepthought only needs a single text-in / text-out completion call. Keeping this
- * minimal means deepthought carries no provider SDK and no credentials.
+ * salience only needs a single text-in / text-out completion call. Keeping this
+ * minimal means salience carries no provider SDK and no credentials.
  */
 export interface LlmClient {
   /**
    * Run a single completion. `system` frames the extraction task; `prompt` carries
-   * the turn. Returns the raw model text (deepthought parses candidates out of it).
+   * the turn. Returns the raw model text (salience parses candidates out of it).
    */
   complete(args: { system: string; prompt: string }): Promise<string>;
 }
@@ -126,7 +126,7 @@ function extractJsonArray(raw: string): unknown[] {
  *
  * The wiring (inject a client, frame the task, bound the output) is real; the
  * model-output PARSING is left as a stub so a host can drop in a concrete client
- * and a structured-output convention without deepthought guessing a JSON shape.
+ * and a structured-output convention without salience guessing a JSON shape.
  */
 export class ModelSalienceExtractor implements SalienceExtractor {
   constructor(private readonly llm: LlmClient) {}
@@ -174,7 +174,7 @@ export class ModelSalienceExtractor implements SalienceExtractor {
 
 /**
  * Convenience factory: build the reference extractor from an injected client.
- * Mirrors how guide constructs an Embedder from injected config.
+ * Mirrors how memory constructs an Embedder from injected config.
  */
 export function createSalienceExtractor(llm: LlmClient): SalienceExtractor {
   return new ModelSalienceExtractor(llm);

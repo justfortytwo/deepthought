@@ -1,11 +1,11 @@
 {
-  "name": "@justfortytwo/deepthought",
+  "name": "@justfortytwo/salience",
   "version": "0.1.0",
-  "description": "Model-driven salience extraction engine for fortytwo: distils a conversational turn into atomic, scored candidate memories. The LLM client is an injected dependency — deepthought owns the contract + a stub, never a provider.",
+  "description": "Model-driven salience extraction engine for fortytwo: distils a conversational turn into atomic, scored candidate memories. The LLM client is an injected dependency — salience owns the contract + a stub, never a provider.",
   "license": "MIT",
   "author": { "name": "Enrico Deleo", "url": "https://enricodeleo.com" },
   "homepage": "https://forty-two.it",
-  "repository": { "type": "git", "url": "git+https://github.com/justfortytwo/deepthought.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/justfortytwo/salience.git" },
   "type": "module",
   "engines": {
     "node": ">=18"
