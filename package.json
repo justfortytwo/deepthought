@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "description": "Model-driven salience extraction engine for fortytwo: distils a conversational turn into atomic, scored candidate memories. The LLM client is an injected dependency — salience owns the contract + a stub, never a provider.",
   "license": "MIT",
-  "author": { "name": "Enrico Deleo", "url": "https://enricodeleo.com" },
+  "author": {
+    "name": "Enrico Deleo",
+    "url": "https://enricodeleo.com"
+  },
   "homepage": "https://forty-two.it",
-  "repository": { "type": "git", "url": "git+https://github.com/justfortytwo/salience.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justfortytwo/salience.git"
+  },
   "type": "module",
   "engines": {
     "node": ">=18"
@@ -26,7 +32,8 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "justfortytwo",
@@ -40,5 +47,8 @@
     "@types/node": "^20.0.0",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
