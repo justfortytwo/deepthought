@@ -10,6 +10,23 @@ This is the piece a **memory server must not embed**: storing and recalling is
 memory's job; deciding *what is worth remembering* is a model-driven judgement, and
 that judgement lives here.
 
+## Install
+
+```bash
+npm install @justfortytwo/salience
+```
+
+**ESM-only**, requires **Node.js >= 18**. It has **zero runtime dependencies** —
+pure TypeScript — so it drops into any host without dragging a provider SDK along.
+
+## Works standalone
+
+salience does **not** depend on `@justfortytwo/memory`. It is a
+provider-agnostic library: you hand it an `LlmClient` and it returns scored
+`Candidate[]`, end of story. memory is an **optional downstream sink** — memory
+depends on salience (it lists it in `peerDependencies`), never the other way
+round — so you can use salience à la carte without ever installing memory.
+
 ## Provider-agnostic by contract
 
 salience defines the model seam (`LlmClient`) and ships the reference
@@ -54,6 +71,10 @@ const candidates: Candidate[] = await extractor.extractSalient({
   implementation: it frames the task, runs the injected client, then parses,
   scores, filters, and stamps provenance on the candidates (see *Output
   convention*).
+- `SALIENCE_SYSTEM_PROMPT` — the exported system framing the reference extractor
+  passes as `system`. It is a plain `const` you can read or override: build your
+  own `LlmClient` (or a custom `SalienceExtractor`) around it when you want to
+  tune the extraction policy without forking the package.
 
 ## Output convention
 
